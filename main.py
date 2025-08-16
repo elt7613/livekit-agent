@@ -130,14 +130,18 @@ async def entrypoint(ctx: JobContext):
 
         # Extract user information from metadata
         user_identifier, user_metadata = await extract_user_info_from_metadata(agent_config)
-        
-        # Create session manager with user tracking
+
+        # Connect to the room before any ctx.room access (FR-02A)
+        await ctx.connect()
+        logger.info(f"Connected to room: {ctx.room.name}")
+
+        # Create session manager with user tracking (requires room_name)
         session_manager = LangfuseSessionManager(
             room_name=ctx.room.name,
             user_identifier=user_identifier,
             user_metadata=user_metadata
         )
-        
+
         session_success = session_manager.setup_session_tracing()
         
         if session_success:
@@ -158,6 +162,19 @@ async def entrypoint(ctx: JobContext):
             
             # Start the main session span with user context
             session_manager.start_session(**session_metadata)
+
+        # Emit room-connected event after establishing room and session context
+        if session_manager:
+            session_manager.add_user_event(
+                "room_connected", 
+                room_name=ctx.room.name,
+                connection_time=asyncio.get_event_loop().time()
+            )
+            session_manager.track_user_action(
+                "room_joined",
+                room_name=ctx.room.name,
+                timestamp=asyncio.get_event_loop().time()
+            )
         
         #logger.info(f"ROOM NAME: {agent_config.get('room_name')}")
         logger.info(f"USER ID: {session_manager.user_id}")
@@ -185,20 +202,7 @@ async def entrypoint(ctx: JobContext):
             min_interruption_duration=0.25,  
         )
         
-        await ctx.connect()
-        logger.info(f"Connected to room: {ctx.room.name}")
         
-        if session_manager:
-            session_manager.add_user_event(
-                "room_connected", 
-                room_name=ctx.room.name,
-                connection_time=asyncio.get_event_loop().time()
-            )
-            session_manager.track_user_action(
-                "room_joined",
-                room_name=ctx.room.name,
-                timestamp=asyncio.get_event_loop().time()
-            )
 
         await session.start(
             room=ctx.room,

@@ -3,16 +3,16 @@
 
 # 10-8-2025
 - deployment cheks and fixes and structuring ✅
-- deploy
-- test inbound/outboud
-- fix if any issues after deployed inbound/outbound
+- deploy ✅
+- test inbound/outboud ✅
+- fix if any issues after deployed inbound/outbound ✅
 
-# 11th - 17th Aug:
+# 17th - 23rd Aug:
 - Langgraph agent update
 
-# 18th - 24th Aug:
+# 24th - 30th Aug:
 - Need to plan the proper system structure considering both main backend and calling system backend
 - calling system backend (Lots to cover but at least the logic of working must be impleented for post call process)
 
-# 25th - 31st Aug:
+# 31st Aug:
 - Bug fixes or extra integrations

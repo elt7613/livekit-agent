@@ -174,7 +174,7 @@ class AgentSetup(Agent, HangupCall, ConversationHistory):
                         try:
                             await self.session.generate_reply(
                                 instructions=greeting_instructions,
-                                allow_interruptions=True
+                                allow_interruptions=False
                             )
                         finally:
                             if span:
@@ -182,7 +182,7 @@ class AgentSetup(Agent, HangupCall, ConversationHistory):
                     else:
                         await self.session.generate_reply(
                             instructions=greeting_instructions,
-                            allow_interruptions=True
+                            allow_interruptions=False
                         )
                     
                     self._greeting_sent = True

@@ -33,7 +33,7 @@ async def rag_query(
         str: A string containing the query results.
 
     """
-    url = f"{BASE_URL}/query-data"
+    url = f"{BASE_URL}/livekit/query-data"
     
     # Request body
     payload = {
